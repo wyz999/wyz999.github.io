@@ -1,55 +1,60 @@
 name: docs
 
 on:
-  # 每当 push 到 main 分支时触发部署
   push:
     branches: [main]
-  # 手动触发部署
   workflow_dispatch:
 
-# 赋予 GITHUB_TOKEN 写入代码内容的权限（用于推送到 docs 分支）
+# 使用官方 Pages 工作流程，避免第三方 Action 受限导致的快速失败
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  docs:
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
         with:
-          # “最近更新时间” 等 git 日志相关信息，需要拉取全部提交记录
           fetch-depth: 0
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          # 选择要使用的 pnpm 版本
-          version: 10
-          # 使用 pnpm 安装依赖
-          run_install: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          # 选择要使用的 node 版本
           node-version: 22
-          # 缓存 pnpm 依赖
           cache: pnpm
 
-      # 运行构建脚本
+      - name: Enable corepack and set pnpm version
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.4.0 --activate
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
       - name: Build VuePress site
         run: pnpm docs:build
 
-      # 查看 workflow 的文档来获取更多信息
-      # @see https://github.com/crazy-max/ghaction-github-pages
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v4
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          # 部署到 docs 分支
-          target_branch: docs
-          # 部署目录为 VuePress 的默认输出目录
-          build_dir: docs/.vuepress/dist
-        env:
-          # @see https://docs.github.com/cn/actions/reference/authentication-in-a-workflow#about-the-github_token-secret
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: docs/.vuepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
