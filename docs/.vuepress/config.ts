@@ -14,7 +14,7 @@ import { defineUserConfig } from 'vuepress'
 import { plumeTheme } from 'vuepress-theme-plume'
 
 export default defineUserConfig({
-  base: '/zhuo.github.io/',
+  base: '/',
   lang: 'zh-CN',
   locales: {
     '/': {
