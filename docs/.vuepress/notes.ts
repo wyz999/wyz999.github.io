@@ -35,6 +35,28 @@ const zhDemoNote = defineNoteConfig({
   // sidebar: 'auto',
 })
 
+// 新增：PHP 笔记
+const zhPhpNote = defineNoteConfig({
+  dir: 'php',
+  link: '/php',
+  // 手动配置侧边栏，显示中文标题
+  sidebar: [
+    '',  // README.md
+    {
+      text: '技术分享',
+      dir: 'tech-share',
+      link: '/php/技术分享/',
+      items: 'auto'  // 自动生成技术分享下的文章
+    },
+    {
+      text: '面试题',
+      dir: 'interview-questions', 
+      link: '/php/面试题/',
+      items: 'auto'  // 自动生成面试题下的文章
+    }
+  ],
+})
+
 /**
  * 导出所有的 note
  * 每一个 note 都应该填入到 `notes.notes` 数组中
@@ -43,7 +65,7 @@ const zhDemoNote = defineNoteConfig({
 export const zhNotes = defineNotesConfig({
   dir: 'notes',
   link: '/',
-  notes: [zhDemoNote],
+  notes: [zhDemoNote, zhPhpNote],
 })
 
 /* =================== locale: en-US ======================= */

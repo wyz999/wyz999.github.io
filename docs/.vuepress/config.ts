@@ -18,12 +18,12 @@ export default defineUserConfig({
   lang: 'zh-CN',
   locales: {
     '/': {
-      title: 'zhuo ge',
+      title: 'zhuo',
       lang: 'zh-CN',
       description: '卓哥的博客',
     },
     '/en/': {
-      title: 'zhuo ge',
+      title: 'zhuo',
       lang: 'en-US',
       description: '卓哥的博客',
     },
