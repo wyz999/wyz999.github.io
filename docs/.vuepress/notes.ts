@@ -35,25 +35,24 @@ const zhDemoNote = defineNoteConfig({
   // sidebar: 'auto',
 })
 
-// 新增：PHP 笔记
-const zhPhpNote = defineNoteConfig({
-  dir: 'php',
-  link: '/php',
-  // 手动配置侧边栏，显示中文标题
+// 拆分：PHP 技术分享（与 面试题 分离，避免互相出现在对方的侧边栏）
+const zhPhpTechShareNote = defineNoteConfig({
+  dir: 'php/tech-share',
+  link: '/php/技术分享/',
   sidebar: [
-    '',  // README.md
-    {
-      text: '技术分享',
-      dir: 'tech-share',
-      link: '/php/技术分享/',
-      items: 'auto'  // 自动生成技术分享下的文章
-    },
-    {
-      text: '面试题',
-      dir: 'interview-questions', 
-      link: '/php/面试题/',
-      items: 'auto'  // 自动生成面试题下的文章
-    }
+    '', // tech-share/index.md
+    // 根据目录自动生成该分区下的文章
+    { text: '文章', items: 'auto' },
+  ],
+})
+
+// 拆分：PHP 面试题（独立 note，确保只显示面试题相关内容）
+const zhPhpInterviewNote = defineNoteConfig({
+  dir: 'php/interview-questions',
+  link: '/php/面试题/',
+  sidebar: [
+    '', // interview-questions/index.md
+    { text: '题库', items: 'auto' },
   ],
 })
 
@@ -65,7 +64,7 @@ const zhPhpNote = defineNoteConfig({
 export const zhNotes = defineNotesConfig({
   dir: 'notes',
   link: '/',
-  notes: [zhDemoNote, zhPhpNote],
+  notes: [zhDemoNote, zhPhpTechShareNote, zhPhpInterviewNote],
 })
 
 /* =================== locale: en-US ======================= */
